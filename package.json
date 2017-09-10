@@ -1,0 +1,24 @@
+{
+  "name": "domaincheck",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.15.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AussieGuy0/domaincheck.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AussieGuy0/domaincheck/issues"
+  },
+  "homepage": "https://github.com/AussieGuy0/domaincheck#readme"
+}
