@@ -1,9 +1,13 @@
 <html>
     <head>
+        <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
     </head>
 
     <body>
-		<form>
+		<form method="get" action="/checkDomain">
+            <label for="domain-name">Check Domain: </label>
+            <input id="domain-name" type="text" name="domain">
+            <button type="submit">Check</button>
 		</form>
     </body>
 </html>

@@ -9,8 +9,15 @@ const encoding = 'utf-8'
 app.get(`${apiUrl}:domain`, (req,res) => {
     const domainUrl = req.params.domain;
     const domainCheck = domainService.checkDomain(domainUrl, (data) => res.end(data, encoding));
+});
 
-    return domainCheck;
-})
+app.get('/checkDomain', (req, res) => {
+    const domainUrl = req.query.domain;    
+    const domainCheck = domainService.checkDomain(domainUrl, (data) => { 
+        res.end(JSON.stringify(data), encoding);
+    });
+});
+
+app.use(express.static("public"));
 
 app.listen(port, () => console.log(`App running on port ${port}`));
