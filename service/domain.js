@@ -4,58 +4,66 @@ const dns = require("dns")
 const noMatchStart = 'No match';
 const lineEnding = '\r\n'
 
-function convertWhois(whoisText) {
-    const out = {};
-    if (whoisText.startsWith(noMatchStart)) {
-        out.found = false;
-        return out;
-    } else {
-        const lines = whoisText.split(lineEnding);
-        const out.found = true;
-        const data = {};
-        lines.some((e) => {
-            if (e.startsWith(">>>")) {
-                return true; 
-            }
-
-            const line = e.split(':');
-            const key = line[0].trim();
-            const value = line[0].trim();
-
-            data[key] = value;
-        });
-        out.data = data;
-        return out;
-    }
-}
 
 module.exports = {
     checkDomain: function (domainUrl, callback) {
         const server = domainUrl.substring(domainUrl.lastIndexOf(".") + 1) + ".whois-servers.net"
         const port = 43;
 
-        dns.resolveCname(server, function(error, addresses) {
-            var host = "";
+        dns.resolveCname(server, (error, addresses) => {
+            let host;
 
-            if(!error) host = addresses[0];
-            else host = server;
+            if (!error) {
+                host = addresses[0];
+            } else {
+                host = server;
+            }
 
-            var socket = net.createConnection(port, host, function() {
+            const socket = net.createConnection(port, host, () => {
                 socket.write(`domain ${domainUrl} ${lineEnding}`, 'ascii');
             });
 
             socket.setEncoding('ascii');
 
-            var data = '';
-            socket.on('data', function(response) {
+            let data = '';
+            socket.on('data', (response) => {
                 data = data + response;
-            }).on("close", function(error) {
+            }).on("close", (error) => {
                 if (error) {
                     data = 'No WHOIS data for this domain!';
+                    const notFound = {found: false}
+                    callback(whoisObject);
+                } else {
+                    const whoisObject = this.convertWhois(data);
+                    callback(whoisObject);
+
                 }
-                callback(convertWhois(data));
             });
         }); 
         return callback;
+    },
+    convertWhois: function(whoisText) {
+        const out = {};
+        if (whoisText.startsWith(noMatchStart)) {
+            out.found = false;
+            return out;
+        } else {
+            const lines = whoisText.split(lineEnding);
+            out.found = true;
+            const data = {};
+            lines.some((e) => {
+                if (e.startsWith(">>>")) {
+                    return true; 
+                }
+
+                const line = e.split(':');
+                const key = line[0].trim();
+                const value = line[1].trim();
+
+                data[key] = value;
+            });
+            out.data = data;
+            return out;
+        }
     }
 }
