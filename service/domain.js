@@ -2,7 +2,20 @@ const net = require('net')
 const dns = require("dns")
 
 const noMatchStart = 'No match';
-const lineEnding = '\r\n'
+const lineEnding = '\r\n';
+
+/**
+ * Converts a string to camelcase.
+ *
+ * TODO: Make better. Works for our needs currently.
+ */
+function toCamelCase(str) {
+    let out = "";
+
+    out += str.charAt(0).toLowerCase();
+    out += str.substr(1).replace(/ /g, "");
+    return out;
+}
 
 
 module.exports = {
@@ -57,7 +70,7 @@ module.exports = {
                 }
 
                 const line = e.split(':');
-                const key = line[0].trim();
+                const key = toCamelCase(line[0].trim());
                 const value = line[1].trim();
 
                 data[key] = value;

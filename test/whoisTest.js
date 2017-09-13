@@ -7,14 +7,25 @@ const resourcesDir = './test/resources';
 describe('domainCheck', function() {
     const goodWhoisText = fs.readFileSync(`${resourcesDir}/goodWHOIS.txt`, 'utf-8');
     const badWhoisText = fs.readFileSync(`${resourcesDir}/badWHOIS.txt`, 'utf-8');
-    describe('#convertWhoIs', function() {
+    describe('Convert found whois', function() {
+        const whois = domainCheck.convertWhois(goodWhoisText);
         it('should say was found', function() {
-            const obj = domainCheck.convertWhois(goodWhoisText);
-            assert.ok(obj.found);
+            assert.ok(whois.found);
         });
+        it('should have correct domain name', function() {
+            assert.equal(whois.data.domainName, 'GOOGLE.COM');
+        });
+        it('should have correct expiry date', function() {
+            assert.equal(whois.data.registryExpiryDate, '2020-09-14T04');
+        });
+    });
+    describe('Convert not found whois', function() {
+        const whois = domainCheck.convertWhois(badWhoisText);
         it('should say it was not found', function() {
-            const obj = domainCheck.convertWhois(badWhoisText);
-            assert.ok(!obj.found);
+            assert.ok(!whois.found);
+        });
+        it('should not have data', function() {
+            assert.equal(whois.data, undefined);
         });
     });
 });
