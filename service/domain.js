@@ -43,7 +43,6 @@ module.exports = {
                 data = data + response;
             }).on("close", (error) => {
                 if (error) {
-                    data = 'No WHOIS data for this domain!';
                     const notFound = {found: false}
                     callback(whoisObject);
                 } else {

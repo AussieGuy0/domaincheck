@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const domainService = require('./service/domain')
+const View = require('./view/views')
 
 const port = 3000;
 const apiUrl = '/api/v1/'
@@ -13,11 +14,17 @@ app.get(`${apiUrl}:domain`, (req,res) => {
 
 app.get('/checkDomain', (req, res) => {
     const domainUrl = req.query.domain;    
-    const domainCheck = domainService.checkDomain(domainUrl, (data) => { 
-        res.end(JSON.stringify(data), encoding);
+    const domainCheck = domainService.checkDomain(domainUrl, (whois) => { 
+        if (whois.found) {
+            var view = new View("takenDomain", whois);
+            res.end(view.render());
+        } else {
+            res.end(JSON.stringify(whois), encoding);
+        }
     });
 });
 
 app.use(express.static("public"));
 
 app.listen(port, () => console.log(`App running on port ${port}`));
+
