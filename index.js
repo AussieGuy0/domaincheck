@@ -24,6 +24,14 @@ app.get('/checkDomain', (req, res) => {
     });
 });
 
+app.get('/subscribe', (req, res) => {
+    const domainUrl = req.query.domain;
+    const email = req.query.email;
+
+    res.end(`Sent a verfication email to ${email}`);
+
+});
+
 app.use(express.static("public"));
 
 app.listen(port, () => console.log(`App running on port ${port}`));
