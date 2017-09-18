@@ -19,8 +19,14 @@ function toCamelCase(str) {
 
 
 module.exports = {
+    /**
+     * A async function that runs a whois on the given domainURL and returns an object of the result.
+     *
+     * @param domainUrl {string} The url that will be checked
+     * @param callback {function(object)} A function that is called when the whois query has completed
+     */
     checkDomain: function (domainUrl, callback) {
-        const server = domainUrl.substring(domainUrl.lastIndexOf(".") + 1) + ".whois-servers.net"
+        const server = domainUrl.substring(domainUrl.lastIndexOf(".") + 1) + ".whois-servers.net";
         const port = 43;
 
         dns.resolveCname(server, (error, addresses) => {
@@ -43,8 +49,8 @@ module.exports = {
                 data = data + response;
             }).on("close", (error) => {
                 if (error) {
-                    const notFound = {found: false}
-                    callback(whoisObject);
+                    const notFound = {found: false};
+                    callback(notFound);
                 } else {
                     const whoisObject = this.convertWhois(data);
                     callback(whoisObject);
@@ -52,8 +58,12 @@ module.exports = {
                 }
             });
         }); 
-        return callback;
     },
+    /**
+     * Parses whoisText string response into an object
+     * @param whoisText the string response from a whois query
+     * @returns {object}
+     */
     convertWhois: function(whoisText) {
         const out = {};
         if (whoisText.startsWith(noMatchStart)) {
@@ -78,4 +88,4 @@ module.exports = {
             return out;
         }
     }
-}
+};
