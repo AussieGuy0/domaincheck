@@ -1,5 +1,6 @@
-const net = require('net')
-const dns = require("dns")
+const net = require('net');
+const dns = require("dns");
+const log = require('../util/log');
 
 const noMatchStart = 'No match';
 const lineEnding = '\r\n';
@@ -52,6 +53,7 @@ module.exports = {
                     const notFound = {found: false};
                     callback(notFound);
                 } else {
+                    log.trace(`Got response for domain: ${domainUrl} - ${data} `);
                     const whoisObject = this.convertWhois(data);
                     callback(whoisObject);
 
@@ -79,10 +81,12 @@ module.exports = {
                 }
 
                 const line = e.split(':');
-                const key = toCamelCase(line[0].trim());
-                const value = line[1].trim();
+                if (line.length === 2) {
+                    const key = toCamelCase(line[0].trim());
+                    const value = line[1].trim();
 
-                data[key] = value;
+                    data[key] = value;
+                }
             });
             out.data = data;
             return out;
