@@ -16,7 +16,7 @@ describe('domainCheck', function() {
             assert.equal(whois.data.domainName, 'GOOGLE.COM');
         });
         it('should have correct expiry date', function() {
-            assert.equal(whois.data.registryExpiryDate, '2020-09-14T04');
+            assert.equal(whois.data.registryExpiryDate, '2020-09-14T04:00:00Z');
         });
     });
     describe('Convert not found whois', function() {

@@ -80,7 +80,7 @@ module.exports = {
                     return true; 
                 }
 
-                const line = e.split(':');
+                const line = e.split(': ');
                 if (line.length === 2) {
                     const key = toCamelCase(line[0].trim());
                     const value = line[1].trim();
