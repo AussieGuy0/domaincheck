@@ -3,9 +3,12 @@ const app = express();
 const domainService = require('./service/domain');
 const View = require('./view/views');
 const log = require('./util/log');
+const DataStoreAccessor = require('./service/dataStoreAccessor');
 
 const apiUrl = '/api/v1/';
 const encoding = 'utf-8';
+
+const db = new DataStoreAccessor();
 
 app.get(`${apiUrl}:domain`, (req, res) => {
     const domainUrl = req.params.domain;
@@ -17,7 +20,7 @@ app.get(`${apiUrl}:domain`, (req, res) => {
  */
 app.get('/checkDomain', (req, res) => {
     const domainUrl = req.query.domain;
-    log.debug(`Checking domain: ${domainUrl}`)
+    log.debug(`Checking domain: ${domainUrl}`);
     if (!verifyDomain(domainUrl)) {
         res.redirect("/");
     } else {
@@ -39,8 +42,15 @@ app.get('/checkDomain', (req, res) => {
 app.get('/subscribe', (req, res) => {
     const domainUrl = req.query.domain;
     const email = req.query.email;
+    db.createUser(email)
+        .then(() => {
+            log.trace(`Created user with email ${email}`);
+            res.end(`Sent a verification email to ${email}`);
+        })
+        .catch((error) => {
+            log.warn(error);
+        })
 
-    res.end(`Sent a verification email to ${email}`);
 
 });
 

@@ -1,32 +1,48 @@
+const firebase = require('firebase-admin');
+const serviceAccount = require(process.env.FIREBASE_CONFIG);
+
+
+const userPath = 'users/';
+const domainPath = 'domains/';
 
 class DataStoreAccessor {
 
-    constructor(dao) {
-        this.dao = dao;
+    constructor() {
+        this.database = firebase.initializeApp(
+            {
+                credential: firebase.credential.cert(serviceAccount),
+                databaseURL: process.env.FIREBASE_URL
+            }
+        ).database();
     }
 
     /**
      * Creates a user with the given email.
      * @param email {string}
      */
-    createUser = function(email) {
-        return this.dao.createUser(email);
+    createUser(email) {
+        const encodedEmail = fixedEncodeURIComponent(email);
+        return this.database.ref(userPath + encodedEmail).set({
+            email: email
+        })
     };
 
     /**
      * Removes the user that has the given email.
      * @param email {string}
      */
-    removeUser = function(email) {
-        return this.dao.removeUser(email);
+    removeUser(email) {
+        const encodedEmail = fixedEncodeURIComponent(email);
+        return this.database.ref(userPath + encodedEmail).remove();
     };
 
     /**
      * Returns the user that has the given email.
      * @param email {string}
      */
-    getUser = function(email) {
-        return this.dao.getUser(email);
+    getUser(email) {
+        const encodedEmail = fixedEncodeURIComponent(email);
+        return this.database.ref(userPath + encodedEmail).once('value');
     };
 
     /**
@@ -34,16 +50,18 @@ class DataStoreAccessor {
      * @param domain {string}
      * @param isTaken {boolean}
      */
-    addDomain = function(domain, isTaken) {
-        return this.dao.addDomain(domain, isTaken);
+    addDomain(domain, isTaken) {
+        return this.database.ref(domainPath + domain).set({
+          isTaken: isTaken
+        });
     };
 
     /**
      * Returns a domain object with the given domain url
      * @param domain {string}
      */
-    getDomain = function(domain) {
-        return this.dao.getDomain(domain);
+    getDomain(domain) {
+        return this.database.ref(domainPath + domain).once('value');
     };
 
     /**
@@ -51,17 +69,23 @@ class DataStoreAccessor {
      * @param domain {string}
      * @param domainObject {object}
      */
-    editDomain = function(domain, domainObject) {
-        return this.dao.editDomain(domain, domainObject);
+    editDomain(domain, domainObject) {
+        return this.database.ref(domainPath + domain).update(domainObject);
     };
 
     /**
      * Removes a domain entry
      * @param domain {string}
      */
-    removeDomain = function(domain) {
-        return this.dao.removeDomain(domain);
+    removeDomain(domain) {
+        return this.database.ref(domainPath + domain).remove();
     };
+}
+
+function fixedEncodeURIComponent(str) {
+    return encodeURIComponent(str).replace(/[!'()*.]/g, function(c) {
+        return '%' + c.charCodeAt(0).toString(16);
+    });
 }
 
 module.exports = DataStoreAccessor;
