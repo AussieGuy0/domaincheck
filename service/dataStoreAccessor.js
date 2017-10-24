@@ -1,8 +1,5 @@
 const firebase = require('firebase-admin');
 
-const firebaseConfig = process.env.FIREBASE_CONFIG;
-const serviceAccount = firebaseConfig !== undefined ? require(firebaseConfig) : undefined;
-
 
 const userPath = 'users/';
 const domainPath = 'domains/';
@@ -10,12 +7,16 @@ const domainPath = 'domains/';
 class DataStoreAccessor {
 
     constructor() {
-        this.database = firebase.initializeApp(
-            {
-                credential: firebase.credential.cert(serviceAccount),
-                databaseURL: process.env.FIREBASE_URL
-            }
-        ).database();
+        const firebaseConfig = process.env.FIREBASE_CONFIG;
+        const serviceAccount = firebaseConfig !== undefined ? require(firebaseConfig) : null;
+        if (serviceAccount !== null) {
+            this.database = firebase.initializeApp(
+                {
+                    credential: firebase.credential.cert(serviceAccount),
+                    databaseURL: process.env.FIREBASE_URL
+                }
+            ).database();
+        }
     }
 
     /**
