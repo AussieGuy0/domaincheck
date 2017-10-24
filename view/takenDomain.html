@@ -1,14 +1,16 @@
-<div>
-    <h1> The domain ${data.domainName} is taken :( </h1>
-    <div> It will be avaliable on: ${data.registryExpiryDate} </div>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="stylesheets/styles.css"/>
+</head>
+<body>
+<div class="container">
+    <div>
+        <h1 class="title"> The domain ${data.domainName} is taken :( </h1>
+        <h2> It will be available on: ${data.registryExpiryDate}</h2>
+    </div>
+    <div>
+        <a href="/">Go Back</a>
+    </div>
 </div>
-<h2> Subscribe with your email to be notified when the domain becomes free! </h2>
-<form method="get" action="/subscribe">
-    <label for="email">Email:</label>
-    <input id="email" type="email" name="email" required>
-    <input type="hidden" value="${data.domainName}" name="domain">
-    <button type="submit">Subscribe</button>
-</form>
-<div>
-    <a href="/">Go Back</a>
-</div>
+</body>
+</html>

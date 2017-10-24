@@ -11,6 +11,13 @@ html, body {
     transform: translateX(-50%) translateY(-50%);
 }
 
+.container {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
 .title {
     font-size: 400%;
 }

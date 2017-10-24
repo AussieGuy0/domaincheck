@@ -1,5 +1,7 @@
 const firebase = require('firebase-admin');
-const serviceAccount = require(process.env.FIREBASE_CONFIG);
+
+const firebaseConfig = process.env.FIREBASE_CONFIG;
+const serviceAccount = firebaseConfig !== undefined ? require(firebaseConfig) : undefined;
 
 
 const userPath = 'users/';
@@ -52,7 +54,7 @@ class DataStoreAccessor {
      */
     addDomain(domain, isTaken) {
         return this.database.ref(domainPath + domain).set({
-          isTaken: isTaken
+            isTaken: isTaken
         });
     };
 
@@ -83,7 +85,7 @@ class DataStoreAccessor {
 }
 
 function fixedEncodeURIComponent(str) {
-    return encodeURIComponent(str).replace(/[!'()*.]/g, function(c) {
+    return encodeURIComponent(str).replace(/[!'()*.]/g, function (c) {
         return '%' + c.charCodeAt(0).toString(16);
     });
 }
