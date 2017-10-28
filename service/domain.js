@@ -20,6 +20,34 @@ function toCamelCase(str) {
 
 
 module.exports = {
+    verifyDomain: function (domainUrl) {
+        return verifyLength(domainUrl) && verifyFormat(domainUrl);
+
+        function verifyLength(domainUrl) {
+            return domainUrl.length > 0 && domainUrl.length < 255;
+        }
+
+        function verifyFormat(domainUrl) {
+            const index = domainUrl.indexOf('.');
+            if (index === -1) {
+                return false;
+            }
+
+            const domain = domainUrl.substring(0, index);
+            const regex = /^[A-Za-z\-0-9]+$/;
+
+            if (!regex.test(domain)) {
+                return false;
+            }
+
+            const tld = domainUrl.substring(index);
+
+            return tld === ".com";
+
+        }
+
+
+    },
     /**
      * A async function that runs a whois on the given domainURL and returns an object of the result.
      *

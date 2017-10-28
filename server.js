@@ -21,7 +21,7 @@ app.get(`${apiUrl}:domain`, (req, res) => {
 app.get('/checkDomain', (req, res) => {
     const domainUrl = req.query.domain;
     log.debug(`Checking domain: ${domainUrl}`);
-    if (!verifyDomain(domainUrl)) {
+    if (!domainService.verifyDomain(domainUrl)) {
         res.redirect("/");
     } else {
         domainService.checkDomain(domainUrl, (whois) => {
@@ -56,18 +56,6 @@ app.get('/subscribe', (req, res) => {
 
 app.use(express.static("public"));
 
-function verifyDomain(domainUrl) {
-    return verifyLength(domainUrl) && verifyFormat(domainUrl);
-
-    function verifyLength(domainUrl) {
-       return domainUrl.length > 0 && domainUrl.length < 255;
-    }
-
-    function verifyFormat(domainUrl) {
-        return domainUrl.indexOf('.') > -1;
-    }
-
-}
 
 module.exports = {
     listen: function (port) {
